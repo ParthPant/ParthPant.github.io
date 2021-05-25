@@ -10,7 +10,8 @@ type Props = {
 
 const Feed = ({ edges }: Props) => (
   <div className={styles['feed']}>
-    {edges.map((edge) => (
+    {edges.length <= 0 && <div>No Posts Yet</div>}
+    {edges.length > 0 && edges.map((edge) => (
       <div className={styles['feed__item']} key={edge.node.fields.slug}>
         <div className={styles['feed__item-meta']}>
           <time className={styles['feed__item-meta-time']} dateTime={ new Date(edge.node.frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}>
@@ -27,7 +28,8 @@ const Feed = ({ edges }: Props) => (
         <p className={styles['feed__item-description']}>{edge.node.frontmatter.description}</p>
         <Link className={styles['feed__item-readmore']} to={edge.node.fields.slug}>Read</Link>
       </div>
-    ))}
+    ))
+    }
   </div>
 );
 

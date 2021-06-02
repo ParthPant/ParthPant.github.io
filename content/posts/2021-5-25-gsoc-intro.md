@@ -14,10 +14,11 @@ socialImage: '/media/snap.png'
 
 _The following is an excrept from my actual GSoC proposal_
 
-###TLDR
+### TLDR
 I propose to add OnCanvas Alignment Guides to Inkscape. When enabled, while moving objects around in the canvas, the selection will snap to temporary Horizontal or Vertical guide lines that will appear if the selected object can be aligned relative to another object on the canvas.
 
-#Motivation
+## Motivation
+
 Currenty on Canvas Snapping in Inkscape is limited only to snapping points in close poximity.
 Points on objects are snapped based on their distance (_L2 Norm_). However there is no provision
 for snapping objects that may align with each other. Currently the Align & Distribute dialog is the 
@@ -25,7 +26,8 @@ only way to align objects.
 Alignment Snapping or __Smart Snaping__ as some call it is an integral feature of modern
 graphics software.
 
-#So what are Alignment Guides?
+## So what are Alignment Guides?
+
 Alignment guides are Horizontal or Vertical lines that only appear when you're 
 editing objects on the canvas. They provide more contextual information about and
 objects X/Y position relative to other nearby objects. As you get closer to align
@@ -36,7 +38,8 @@ in vertical or horizontal direction depending on the optimum snap found
 
 ![Image](/media/b1-1.png)
 
-#Searching for Snap Candidates
+## Searching for Snap Candidates
+
 The easiest way to find candidate alignment positions is by looking at the corner
 and edge midpoints of bounding boxes of the surrounding objects.
 Once the candidate points are found we can find the best snap position in the following way:
@@ -47,16 +50,19 @@ to snap to is a point R which is the projection of Q on the line perpendicular t
 
 ![Image](/media/snap.png)
 
-#Settings and Toggles
+## Settings and Toggles
+
 After some discussion with #team_ux, I feel the following scheme would be the 
 best in terms of giving extra control but at the same time not making this feature
 too complicated.
 
-###Toggle Buttons:
+### Toggle Buttons:
+
 - Alignment Snapping (enable/disable alignment guides to snap to bounding boxes of the objects, no snapping when editing nodes) (enabled by default)
   - Snap only to itself (enable/disable alignment guides while editing nodes to other nodes in the path that is being edited) (disabled by default)
 
-#What More?
+## What More?
+
 This is just an early assesment in terms of what we can do with Alignment Guides
 One of the future possible goals of this project is use Alignment Guides to distribute objects
 ![Image](/media/distribute.png)

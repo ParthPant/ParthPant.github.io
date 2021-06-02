@@ -27,7 +27,7 @@ module.exports = {
   author: {
     name: 'Parth Pant',
     photo: '/photo.jpg',
-    bio: 'GSoC 2021 @ Inkscape | Electronics Engineer | OpenSource Enthusiast',
+    bio: 'GSoC 2021 @ Inkscape | Student | OpenSource Enthusiast',
     contacts: {
       email: 'parthpant4@gmail.com',
       facebook: 'parth.pant.5',

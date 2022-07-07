@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Parth Pant]]></title><description><![CDATA[Parth Pant]]></description><link>https://lumen.netlify.com</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 07 Jul 2022 05:32:15 GMT</lastBuildDate><item><title><![CDATA[Week 8 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 8 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week8</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week8</guid><pubDate>Wed, 14 Jul 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/0fd8119c475116ed1f982e06120ea265/recursive.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;merged&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#merged&quot; aria-label=&quot;merged permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;MERGED!&lt;/h2&gt;
+&lt;p&gt;My Merge request was finally merged this week. With that Inkscape now finally has Alignment Snapping feature.
+And not only that, but I am very glad that I actually managed to implement distribution snapping too when it
+was actually a part of the extended goals in my GSoC proposal.&lt;/p&gt;
+&lt;h2 id=&quot;larger-testing--more-bugs&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#larger-testing--more-bugs&quot; aria-label=&quot;larger testing  more bugs permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Larger Testing = More Bugs&lt;/h2&gt;
+&lt;p&gt;With the features being now in the master branch, more people now get to test the functionality of the newly implemented
+snapping options. It is expected that with more people actually using the feature, there will me more bugs that
+are detected. Here I give a brief description of the bugs that have been found so far and I have already started working
+on them.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Oblique intersection alignment guides (&lt;a href=&quot;https://gitlab.com/inkscape/inkscape/-/merge_requests/3294#note_622052639&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Related Link&lt;/a&gt;)
+This is a very interesting bug that happens because the logic that combines the Alignment snap with Distribution only made
+sure that alignment snap was a straight line in only one direction and did not really care about the other direction.&lt;/li&gt;
+&lt;li&gt;Memory Leak in distribution Snapping (&lt;a href=&quot;https://gitlab.com/inkscape/inkscape/-/issues/2628&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Related Link&lt;/a&gt;)
+Porbably the most important bug to fix, &lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; had a memory leak and would cause random crashes while editing some files.&lt;/li&gt;
+&lt;li&gt;When dragging an object the Shift key can be held to temporarily disable snapping. This did work with Alignment and Distribution
+snaps but the indicators were not cleared and got stuck when Shift is held. &lt;/li&gt;
+&lt;li&gt;Fix self-snapping when creating a new object and trying to scale it immediately after.
+I discovered this bug only after the feature was merged but it was pretty easy to fix.&lt;/li&gt;
+&lt;li&gt;Alignment and Distribution snaps did not work when adjusting existing shapes. This was a pretty easy fix but took a long time to figure out
+what was going wrong.&lt;/li&gt;
+&lt;li&gt;Better positioning for distribution guides so they do not collide with alignment guides
+Distribution guides will now never overlap with the alignment guides. This will not cause confusion when snap distances are visible.&lt;/li&gt;
+&lt;li&gt;Distribution snapping no longer turned on by default. Distribution snapping can be a bit (not incredibly) slow when there are a lot of
+objects on the canvas. Most of the times for complex vector drawings I dont think users will need distribution snapping and it can be annoying.&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Week 7 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 7 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week7</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week7</guid><pubDate>Wed, 07 Jul 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/0fd8119c475116ed1f982e06120ea265/recursive.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;fixing-minor-bugs&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#fixing-minor-bugs&quot; aria-label=&quot;fixing minor bugs permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Fixing Minor Bugs&lt;/h2&gt;
+&lt;p&gt;Most of this week, I spent my time fixing minor bugs and improving code quality of Distribution Snapping.
+One of the most noticeable bugs that somehow crept in was during bidirectional distribution snapping.
+If you were moving an selection of multiple objects and trying to “equidistant snap” in both X and Y directions,
+the snapping would happen relative to the overall bounding box of the selection and not the object that was actually
+being moved. Fortunately this was an easy-fix!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/b6fdef47b0cada4cf5156099bd26de2a/bidirectional.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Distribution and Alignment snapping will now be turned ON by default when you open inkscape. Also, instead of having a
+separate “Intelligent Snapping” heading in the preferences, the setting to disable snap distances are now included in
+an overall heading called “Snap”&lt;/p&gt;
+&lt;p&gt;Also replaced raw pointers with smart-pointers wherever possible, this makes code cleaner and less error-prone. It’s also
+a nice modern C++ paradigm to adopt into the codebase.&lt;/p&gt;
+&lt;p&gt;But one of the major but not very visible bugs that needed fixing was caused due to the poor implementation of &lt;code class=&quot;language-text&quot;&gt;_addBBoxforIntersectionBBoxes&lt;/code&gt;.
+I should have known this earlier, but given the idiot I am, I forgot how &lt;code class=&quot;language-text&quot;&gt;std::vector::iterator&lt;/code&gt;s behave.&lt;/p&gt;
+&lt;h2 id=&quot;iterator-invalidation&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#iterator-invalidation&quot; aria-label=&quot;iterator invalidation permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Iterator Invalidation&lt;/h2&gt;
+&lt;p&gt;In case we have overlapping objects, it is useful that apart from probing them individually,
+we also consider them to be a single object. This can be achieved with a simple hack.&lt;/p&gt;
+&lt;p&gt;This involves, looking at each of the 4 lists, and add to them, the overall bounding boxes
+of objects that overlap. It is important that these new bounding boxes are inserted
+in such a way that the overall list remains sorted. The function &lt;code class=&quot;language-text&quot;&gt;_addBBoxforIntersectingBBoxes&lt;/code&gt;
+takes care of this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/9d98c2207dd8ebbe95f4128bb3cccd0b/overlap.svg&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The problem arises, when you insert an element into a &lt;code class=&quot;language-text&quot;&gt;std::vector&lt;/code&gt;. &lt;code class=&quot;language-text&quot;&gt;vector&lt;/code&gt;s are supposed to be contiguous storage,
+it’s what makes them so fast. When you insert and element in between somewhere in a vector, you invalidate all of the
+iterators that come after that position. Not only that, incase in the process of insertion, your &lt;code class=&quot;language-text&quot;&gt;vector&lt;/code&gt; needs to resize
+itself, it will invalidate all of the iterators before and after that position. So, in essence any iterator that you had stored
+earlier will be useless. This causes &lt;code class=&quot;language-text&quot;&gt;unaligned memory tcache chunk&lt;/code&gt; errors. These are unpredictable and can happen at anytime,
+especially when you have to insert a lot of elements.&lt;/p&gt;
+&lt;p&gt;So, now that you know what the problem was, it is apparant that things crashed randomly. Interestingly though, if I was testing with
+relatively small number of elements, there were no errors, but if I hade about a 1000 elements in the view port, it seemed like hell
+broke loose!&lt;/p&gt;
+&lt;h2 id=&quot;fix&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#fix&quot; aria-label=&quot;fix permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Fix&lt;/h2&gt;
+&lt;p&gt;The easiest fix would be to not use &lt;code class=&quot;language-text&quot;&gt;std::vector&lt;/code&gt; but to use a &lt;code class=&quot;language-text&quot;&gt;std::list&lt;/code&gt; instead. Lists are not contiguous and it’s iterators do not
+invalidate so easily. But because Lists are not contiguous, they are also slower than &lt;code class=&quot;language-text&quot;&gt;std::vectors&lt;/code&gt;. So to fix the issue and still be able to
+use vectors, I needed to make some changes to the algorithm.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;first calculate the insertion positions of the new bounding boxes and store this data somewhere; I used &lt;code class=&quot;language-text&quot;&gt;std::pair&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;resize the vector to appropriate memory size.&lt;/li&gt;
+&lt;li&gt;add new elements to the vector and use relative positions instead of absolute pointers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;here is the code for the function that is currently in the build.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;void Inkscape::DistributionSnapper::_addBBoxForIntersectingBoxes(std::vector&amp;lt;Geom::Rect&amp;gt; *vec, Direction dir) const {
+    if (vec-&amp;gt;size() &amp;lt; 1) {
+        return;
+    }
+
+    int count = 0;
+    std::vector&amp;lt;std::pair&amp;lt;int, Geom::Rect&amp;gt;&amp;gt; insertPositions;
+
+    for (auto it = vec-&amp;gt;begin(); it != vec-&amp;gt;end(); it++, count++) {
+        Geom::Rect comb(*it);
+        int num = 0;
+        int insertPos = count;
+
+        while (std::next(it) != vec-&amp;gt;end() &amp;amp;&amp;amp; it-&amp;gt;intersects(*std::next(it))) {
+            comb.unionWith(*std::next(it));
+
+            if (dir == Direction::RIGHT &amp;amp;&amp;amp; comb.midpoint().x() &amp;gt; it-&amp;gt;midpoint().x()) {
+                ++insertPos;
+            } else if (dir == Direction::LEFT &amp;amp;&amp;amp; comb.midpoint().x() &amp;lt; it-&amp;gt;midpoint().x()){
+                ++insertPos;
+            } else if (dir == Direction::UP &amp;amp;&amp;amp; comb.midpoint().y() &amp;gt; it-&amp;gt;midpoint().y()){
+                ++insertPos;
+            } else if (dir == Direction::DOWN &amp;amp;&amp;amp; comb.midpoint().y() &amp;lt; it-&amp;gt;midpoint().y()){
+                ++insertPos;
+            }
+
+            ++it;
+            ++num;
+            ++count;
+        }
+
+        if (num &amp;gt; 0) {
+            insertPositions.emplace_back(insertPos, comb);
+        }
+    }
+    
+    if (insertPositions.size() != 0) {
+        // TODO: Does this improve performance?
+        vec-&amp;gt;reserve(vec-&amp;gt;size() + insertPositions.size());
+
+        count = 0;
+        for (auto pair : insertPositions) {
+            vec-&amp;gt;insert(vec-&amp;gt;begin() + pair.first + count, pair.second);
+            ++count;
+        }
+    }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[Week 6 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 6 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week6</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week6</guid><pubDate>Wed, 30 Jun 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/0fd8119c475116ed1f982e06120ea265/recursive.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Once again, another week spent trying to make distribution snapping better in Inkscape!&lt;/p&gt;
+&lt;p&gt;This blog is meant to give a high level description of how Distribution snapping
+is implemented as of now.&lt;/p&gt;
+&lt;h1 id=&quot;the-algorithm&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#the-algorithm&quot; aria-label=&quot;the algorithm permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;“The Algorithm”&lt;/h1&gt;
+&lt;h2 id=&quot;collecting-the-objects&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#collecting-the-objects&quot; aria-label=&quot;collecting the objects permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Collecting the objects.&lt;/h2&gt;
+&lt;p&gt;First we gather all of the relevant objects’ bounding boxes in the canvas. For this
+we only look at objects that are visible in the viewing port. Bounding boxes are
+collected in 4 separate lists, each for a different direction (right, left, up and down).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;any object that overlap the source object is ignored&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All these four lists are sorted so that the objects are arranged from closest to
+farthest from the source object, in that direction respectively.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/f247f7fadd03f5ba9f61202784ae2047/collection.svg&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;finding-equidistant-objects&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#finding-equidistant-objects&quot; aria-label=&quot;finding equidistant objects permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Finding equidistant objects&lt;/h2&gt;
+&lt;p&gt;Once we have these four lists, the function &lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; can look at each
+list and collect a group of objects that are equidistant. This function can takes
+as input the tolerance, one of the 4 lists previously mentioned, and a function pointer
+that describes how to calculate distance in the particualr direction of the list.
+It also takes in by reference an iterator of a list which is used to collect the output.&lt;/p&gt;
+&lt;p&gt;This is a recursive function that tries to find the &lt;strong&gt;largest&lt;/strong&gt; sequence of equidistant
+objects in a list and also outputs the distance between them. The function returns
+true if it finds a snap, and false otherwise.&lt;/p&gt;
+&lt;p&gt;A brief description of the algorithm:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make a new list to hold the result.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;FOR each object in a list&lt;/p&gt;
+&lt;p&gt;2.1. If it’s at a particular distance from the next object&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add the object to the result&lt;/li&gt;
+&lt;li&gt;And call &lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; with next object as the source object&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2.2. If the returned result has more objects than the previous result, use this and discard the previous one. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Now we have a list of the longest sequence of equidistant objects.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;combining-results-from-different-directions&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#combining-results-from-different-directions&quot; aria-label=&quot;combining results from different directions permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Combining results from different directions&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; alone can only look at one list at a time. The function &lt;code class=&quot;language-text&quot;&gt;_snapEquidistantPoints&lt;/code&gt;
+is responsible for combining the resutls obtained for separate directions.&lt;/p&gt;
+&lt;p&gt;Here is a simplification for looking for snaps to the Right:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;IF &lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; returns true for &lt;code class=&quot;language-text&quot;&gt;_bboxes_right&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;1.1. Add the equidistant bounding boxes to the list &lt;code class=&quot;language-text&quot;&gt;vecRight&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;1.2. Store the equal distance in &lt;code class=&quot;language-text&quot;&gt;equalDist&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;1.3. Now IF &lt;code class=&quot;language-text&quot;&gt;_findSidewaysSnaps&lt;/code&gt; returns true for &lt;code class=&quot;language-text&quot;&gt;_bboxes_left&lt;/code&gt; (looking left).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;IF &lt;code class=&quot;language-text&quot;&gt;equalDist&lt;/code&gt; == &lt;code class=&quot;language-text&quot;&gt;leftDist&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;add the equidistant boxes on left to &lt;code class=&quot;language-text&quot;&gt;vecRight&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Now &lt;code class=&quot;language-text&quot;&gt;vecRight&lt;/code&gt; has a list of all equidistant objects.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This procedure is repeated for each direction.&lt;/p&gt;
+&lt;h2 id=&quot;case-with-overlapping-objects&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#case-with-overlapping-objects&quot; aria-label=&quot;case with overlapping objects permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Case with Overlapping objects&lt;/h2&gt;
+&lt;p&gt;In case we have overlapping objects, it is useful that apart from probing them individually,
+we also consider them to be a single object. This can be achieved with a simple hack.&lt;/p&gt;
+&lt;p&gt;This involves, looking at each of the 4 lists, and add to them, the overall bounding boxes
+of objects that overlap. It is important that these new bounding boxes are inserted
+in such a way that the overall list remains sorted. The function &lt;code class=&quot;language-text&quot;&gt;_addBBoxforIntersectingBBoxes&lt;/code&gt;
+takes care of this.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/9d98c2207dd8ebbe95f4128bb3cccd0b/overlap.svg&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;conclusion&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#conclusion&quot; aria-label=&quot;conclusion permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;This was a very simple breakdown of how distribution snapping is implemented in inkscape.
+There are an few more details that I have left out, which make this entire process
+a little bit more efficient (like checking if the distance is withing tolerace before moving ahead).&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Week 5 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 5 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week5</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week5</guid><pubDate>Wed, 23 Jun 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/62fff9a0a3a5c553a0c6ade0260af76e/distribution.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;improving-distribution-snapping&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#improving-distribution-snapping&quot; aria-label=&quot;improving distribution snapping permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Improving Distribution Snapping&lt;/h2&gt;
+&lt;p&gt;I added a very rough implementation of distribution snapping last week and this
+week I tried to improve the code. Implementing distribution snapping has been
+a lot more challenging than alignment snapping and I am glad it is coming along
+so well. This week I was also able to add Bidirectional distribution snapping and
+also imporve the existing algorithm. Up until last week the number of objects that
+were considered to be equidistant was not fixed and it varied each time you moved an
+object. Now this should be much more consistent, though in some cases there may be a
+little difference. Overall distribution snapping algorithm now runs faster than it did
+before.&lt;/p&gt;
+&lt;p&gt;Snap indicators also have been updated to take into account more snap possibilities.
+I spent a lot of time this week cleaning up the code and that must help readability a lot.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/17a8d38d1118c386fafae28e5887c9f1/bidirectional.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;next-up&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#next-up&quot; aria-label=&quot;next up permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Next Up&lt;/h2&gt;
+&lt;p&gt;Distribution snapping, in its current form does not take multiple snap possibilities
+into account for now. I hope to improve the algorithm to work more like it does on Figma.&lt;/p&gt;
+&lt;p&gt;A comparison between Inkscape and Figma’s distribution snapping&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Figma&lt;/th&gt;
+&lt;th&gt;Inkscape&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;/352c705ca0baeb71fcd6c7eea23f4613/figma.gif&quot; alt=&quot;Image&quot;&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;/ab5b591e63b9222c3e7a282739ac27aa/inkscape.gif&quot; alt=&quot;Image&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</content:encoded></item><item><title><![CDATA[Week 4 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 4 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week4</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week4</guid><pubDate>Wed, 16 Jun 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/62fff9a0a3a5c553a0c6ade0260af76e/distribution.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;adding-distribution-snapping&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#adding-distribution-snapping&quot; aria-label=&quot;adding distribution snapping permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Adding Distribution Snapping&lt;/h2&gt;
+&lt;p&gt;This week I worked on adding distribuiton snapping. The inspiration for this feature
+comes from UI design programs like Figma and Penpot. At its core, distribution snapping
+indicates that certain objects are equidistant from each other in either Horizontal
+or Vertical direction. OnCanvas Distribuiton Guides have enormous potential to increase
+workflow speeds. This feature will provide a much faster way to space objects than
+the currently existing Distribution options in the &lt;code class=&quot;language-text&quot;&gt;Align and Distribute objects&lt;/code&gt;
+dialog box.&lt;/p&gt;
+&lt;p&gt;At its current state, Distribution snapping in Inkscape works for most intents and
+purposes but it’s behaviour is limited if compared with something like Figma. Most
+of these limitations are a direct consequence of how this feature is implemented
+in code. I am not really sure of how much it is possible to replicate other programs
+without making some radical changes to how Inkscape handles snapping.&lt;/p&gt;
+&lt;h2 id=&quot;bug-fixes&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#bug-fixes&quot; aria-label=&quot;bug fixes permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Bug Fixes&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;With a new features come a lot of new bugs ;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;It took a lot of time to make sure that alignment snapping works well with the
+previously implemented alignment snapping which is also a part of this project.
+There were quite a few bugs I encountered while implementing snap indicators for
+distribution snapping. Also taking overlapping objects into account while looking
+for equidistant objects was a bit of a challenge.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/47bacb1596a5ab0518bc313bbd294733/inkscape-overlap.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;snap-distance&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#snap-distance&quot; aria-label=&quot;snap distance permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Snap Distance&lt;/h2&gt;
+&lt;p&gt;Both Distribution and Alignment snapping now show the snap distance. For alignment
+snapping, this inspiration was taken from Affinity Designer which does something
+similar. This feature however can be turned off from Preferences in the snapping
+page in case you feel that showing distances causes unnecessary clutter.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/445e27ff7b769717083e3d0a0b575466/inkscape-distance.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;next-up&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#next-up&quot; aria-label=&quot;next up permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Next Up&lt;/h2&gt;
+&lt;p&gt;Distribution snapping needs some more testing. I think at its current state it is
+pretty functional but it can always be improved. I also have plans to make the
+alignment and distribution indicators appear more fluid using fade-in and fade-out
+animations.&lt;/p&gt;
+&lt;p&gt;Also Alignment and Distribution snapping will likely be merged into just one feature
+that will have a nice name (smart snapping, intelligent snapping, big brain snapping, etc.)&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Week 3 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 3 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week3</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week3</guid><pubDate>Wed, 09 Jun 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/ada215a79efea0e637075618f943b5b0/alignment-guides.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;adding-snap-indicators&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#adding-snap-indicators&quot; aria-label=&quot;adding snap indicators permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Adding Snap Indicators&lt;/h2&gt;
+&lt;p&gt;Most of my time this week was spent in extending the &lt;code class=&quot;language-text&quot;&gt;SnapIndicator&lt;/code&gt; class to be
+able to display alignment guides. At first I tried to add custom behaviour to &lt;code class=&quot;language-text&quot;&gt;CanvasItemCtrl&lt;/code&gt;
+to display straight lines and I got pretty close to successfully doing that, the
+only problem being that the snap guides did not fully disappear sometimes. After
+spending a lot of time trying to figure out why, I finally asked the Inkscape community
+for help and I am glad I did! &lt;code class=&quot;language-text&quot;&gt;@Tavmjong&lt;/code&gt; on GitLab pointed out that &lt;code class=&quot;language-text&quot;&gt;CanvasItemCtrl&lt;/code&gt;
+was only meant to draw single points and that I should use &lt;code class=&quot;language-text&quot;&gt;CanvasItemCurve&lt;/code&gt; instead.
+This worked just as I wanted and all I had to do was to pass the class two points
+to draw a line.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;@prokudine&lt;/code&gt; did a wonderful review of the feature over at &lt;a href=&quot;https://youtu.be/pLbtQux5jZY&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;YouTube&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;bug-fixes&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#bug-fixes&quot; aria-label=&quot;bug fixes permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Bug Fixes&lt;/h2&gt;
+&lt;p&gt;I also fixed some easy-to-fix but annoying bugs this week. One of them being that
+the top-left corner of the canvas was always considered for snap in case there was
+and object next to it.&lt;/p&gt;
+&lt;p&gt;Another bug was that the guides sometimes seemed to snap to a point that was farther
+even though there was a point nearer to the source. This was an easy fix&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Before&lt;/th&gt;
+&lt;th&gt;After&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;/80ef821a85f203cbaf03c6ae0c446f96/before.gif&quot; alt=&quot;before&quot;&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;/f903c547177b0d1847fb0f45cce76297/after.gif&quot; alt=&quot;after&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&quot;color-coding-guides&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#color-coding-guides&quot; aria-label=&quot;color coding guides permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Color Coding Guides&lt;/h2&gt;
+&lt;p&gt;After some brief discussion on &lt;code class=&quot;language-text&quot;&gt;#team_ux&lt;/code&gt; I decided to color code the guides. The
+current behaviour is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Red if snapped to another bounding box.&lt;/li&gt;
+&lt;li&gt;Green if snapped to a page corner of page center.&lt;/li&gt;
+&lt;li&gt;Blue in case of self snapping when nodes align to each other.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/16d23819ec96c3b158f277a0ae1e70d4/alignment-colors.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;next-up&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#next-up&quot; aria-label=&quot;next up permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Next Up&lt;/h2&gt;
+&lt;p&gt;With this the core functionality of the alignment guides is almost fully implemented.
+Now I plan to test the feature as much as I can and also see what suggestions user
+testing  presents. Also the feature to show the length of the alignment guides might
+be useful. Another UX feature that would look nice is that the guides should fade
+in as they appear. This can be a bit sketchy to implement but is worth looking into.&lt;/p&gt;
+&lt;p&gt;Apart from this I also plan to implement one of the stretch goals for this project,
+distance snapping. Right now I am not very sure as to how the “algorithm” would
+work but this feature could be very useful to a lot of people.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/563e0c44f2a4430051c3503de38f047b/387d5/distribute.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 27.500000000000004%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMABXDUAAVw1AFBOQ6rAAAAvElEQVQY042RMQrCQBBFH4ooWhisxAhiY6k38SbWHsTKw3gH72BnRASTmBiT+JdkIUqCFo/9zO7M/uGTQ27IICtP/wb9EEbSgb0Taam9E3RimEpH1V4DVuRFkznvoiuGwi9rpiEt9Vm0xFg8KvefA+0viR6tYbaFRVJxYB2qdl2Cu4OVdNLo0BZTrbkH5yAH0uH3QNUuGxgcYS4d/7tyTzgNK3uiLSYi+rmyCeWpUF5FKH5dKIFCkTu3LpQ3elbTUDTRPxIAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/563e0c44f2a4430051c3503de38f047b/8ac56/distribute.webp 240w,
+/static/563e0c44f2a4430051c3503de38f047b/d3be9/distribute.webp 480w,
+/static/563e0c44f2a4430051c3503de38f047b/e46b2/distribute.webp 960w,
+/static/563e0c44f2a4430051c3503de38f047b/f992d/distribute.webp 1440w,
+/static/563e0c44f2a4430051c3503de38f047b/882b9/distribute.webp 1920w,
+/static/563e0c44f2a4430051c3503de38f047b/33e9e/distribute.webp 9386w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/563e0c44f2a4430051c3503de38f047b/8ff5a/distribute.png 240w,
+/static/563e0c44f2a4430051c3503de38f047b/e85cb/distribute.png 480w,
+/static/563e0c44f2a4430051c3503de38f047b/d9199/distribute.png 960w,
+/static/563e0c44f2a4430051c3503de38f047b/07a9c/distribute.png 1440w,
+/static/563e0c44f2a4430051c3503de38f047b/29114/distribute.png 1920w,
+/static/563e0c44f2a4430051c3503de38f047b/387d5/distribute.png 9386w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/563e0c44f2a4430051c3503de38f047b/d9199/distribute.png&quot;
+            alt=&quot;Image&quot;
+            title=&quot;Image&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Week 2 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 2 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week2</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week2</guid><pubDate>Wed, 02 Jun 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/e2a3a0c21e8b32c452fa4028bae83ed9/alignment-2.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;adding-toggles&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#adding-toggles&quot; aria-label=&quot;adding toggles permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Adding Toggles&lt;/h2&gt;
+&lt;p&gt;This week started with me trying to add alignment snapping toggles to Inkscape.
+This took some time as at first I could not figure out how Gio::Actions are set up
+but finally by following how other toggles were implemented I was able to get this
+to work.&lt;/p&gt;
+&lt;p&gt;In the present state of the MR the following toggles exist:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Toggle Alignment Snapping&lt;/strong&gt; option in Snap Controllers Toolbar&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Toggle snapping to other nodes in the same path while editing paths&lt;/strong&gt; as a
+sub-option&lt;/li&gt;
+&lt;li&gt;Snapping to page corners and midpoint if &lt;strong&gt;Toggle Snapping to Page Border option&lt;/strong&gt;
+is enabled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Icons for these still need to be designed.&lt;/p&gt;
+&lt;h2 id=&quot;bug-fixes&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#bug-fixes&quot; aria-label=&quot;bug fixes permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Bug Fixes&lt;/h2&gt;
+&lt;p&gt;Last week there was a bug where the nodes of the object being transformed were
+also being snapped. This was an easy fix by just passing the Bounding Box points
+as Snap Source points in &lt;code class=&quot;language-text&quot;&gt;Seltrans&lt;/code&gt; and adding some toggle checks.&lt;/p&gt;
+&lt;h2 id=&quot;snap-priority&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#snap-priority&quot; aria-label=&quot;snap priority permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Snap Priority&lt;/h2&gt;
+&lt;p&gt;It is highly probable that when we look for potential snap positions, an alignment
+snap positon is the closest. This can be annoying when you are trying to snap to
+other locations (a corner for example). To fix this I modified the &lt;code class=&quot;language-text&quot;&gt;SnappedPoint::findBestSnap()&lt;/code&gt;
+function to give priority to all other snap locations over Alignment Snap positions.&lt;/p&gt;
+&lt;h2 id=&quot;viewport&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#viewport&quot; aria-label=&quot;viewport permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Viewport&lt;/h2&gt;
+&lt;p&gt;While aligment snapping, looking for all the items in the document can be resource
+intensive. Hence its makes sense to only look for items that are currently visible
+in the viewport. This reduces the number of points we need to check and also enhances
+the UX as you will no longer snap to an object you can not see in the viewport.&lt;/p&gt;
+&lt;h2 id=&quot;constraints&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#constraints&quot; aria-label=&quot;constraints permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Constraints&lt;/h2&gt;
+&lt;p&gt;Constraint movements are pretty useful and Alignment Snapping now takes them into
+account. While &lt;code class=&quot;language-text&quot;&gt;Ctrl&lt;/code&gt; is pressed the object only moves in either Horizontal or
+Vertical direction. If the object is being moved in the Y direction, it will not
+snap to alignment guides that are vertical. Similarly if it is being moved in X
+direction, it will not snap to Horizontal guides.&lt;/p&gt;
+&lt;h2 id=&quot;horizontal-and-vertical-lines&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#horizontal-and-vertical-lines&quot; aria-label=&quot;horizontal and vertical lines permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Horizontal and Vertical Lines&lt;/h2&gt;
+&lt;p&gt;Objects will now snap to points of intersection of two alignment guides. Hence you
+can now simultaneously align objects vertically and horizontally with respect to
+two neighbouring objects.&lt;/p&gt;
+&lt;h2 id=&quot;snap-indicators&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#snap-indicators&quot; aria-label=&quot;snap indicators permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Snap Indicators&lt;/h2&gt;
+&lt;p&gt;With the work of actually finding and snapping to alignment locations almost done,
+this week I also started looking into the implementation of &lt;code class=&quot;language-text&quot;&gt;SnapIndicator&lt;/code&gt; class.
+The behaviour of Alignment Snap Indicators is very different from that of the
+conventional Snap Indicators in Inkscape, in that the alignment indicators disappear
+when an object is &lt;em&gt;ungrabbed&lt;/em&gt; and opposed to other snap indicators that have a set
+lifetime.&lt;/p&gt;
+&lt;h2 id=&quot;next-up&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#next-up&quot; aria-label=&quot;next up permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Next Up&lt;/h2&gt;
+&lt;p&gt;Next week I will look into better understanding how canvas works in Inkscape and
+try to figure out a nice way to display the Alignment Indicators that behave as
+described above.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Week 1 - OnCanvas Alignment Guides]]></title><description><![CDATA[Week 1 progress on my GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-week1</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-week1</guid><pubDate>Wed, 26 May 2021 06:31:00 GMT</pubDate><content:encoded>&lt;h2 id=&quot;community-bonding&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#community-bonding&quot; aria-label=&quot;community bonding permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Community Bonding&lt;/h2&gt;
+&lt;p&gt;Since this period is a part of the GSoC community bonding period, I spent much of
+my time going through the codebase and trying to understand how existing implementation
+of snapping works and asking the community what I do not understand.&lt;/p&gt;
+&lt;h2 id=&quot;adding-preferences&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#adding-preferences&quot; aria-label=&quot;adding preferences permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Adding Preferences&lt;/h2&gt;
+&lt;p&gt;Currently snapping prefferences reside in the &lt;strong&gt;Document Properties Dialog&lt;/strong&gt; under the
+Snap tab. So the first thing I added was a category called ”&lt;em&gt;Alignment Snapping&lt;/em&gt;” to that
+dialog.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 671px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/e1318cfc24afa3574c819e68bee285d9/d0e73/props.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 90.83333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAASCAIAAADUsmlHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWklEQVQ4y5VT7W6EIBDkdU5BBVE+RAXv9LymTf/1/R+lgzRpk6ZX3B8G1h12dnaXSNl2nazruu/7oig454xVepilsgynqqKUHgEVrl3XIbIsy7Zt4SdunJclrOuqtYIXLspYWQlaC/rDgPx9Jvb6ft/3bdu898YY5xySU1oigP1hBzySIkIIa+3gnJQyudh/dini0wCSpmlCCPM8I7nWOrHKNAKeIXjglVJ4CGWfAPuXj/thKBhgkIeeOcgoWFU34+jGcUTl6FbK/5w8/kKaWLMQUJejb6mBmbQBRjzx4Yom7/vdWoMnMzl/0Vb+dd222+02TRPUHobh6PNz2iylIXXTKKWhFucYqRN9bltBluAxnkiLLzTLb1WkPVzfEm3MCdQGc/DJHBXCe4u0QBqjoX5On79pWxMLhtTwFsUlJ2eKiYuBlcB4PR4PbBU4szNGQBK0/WHY9VOL8Qk8yc1t097ZSwAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/e1318cfc24afa3574c819e68bee285d9/8ac56/props.webp 240w,
+/static/e1318cfc24afa3574c819e68bee285d9/d3be9/props.webp 480w,
+/static/e1318cfc24afa3574c819e68bee285d9/86a29/props.webp 671w&quot;
+              sizes=&quot;(max-width: 671px) 100vw, 671px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/e1318cfc24afa3574c819e68bee285d9/8ff5a/props.png 240w,
+/static/e1318cfc24afa3574c819e68bee285d9/e85cb/props.png 480w,
+/static/e1318cfc24afa3574c819e68bee285d9/d0e73/props.png 671w&quot;
+            sizes=&quot;(max-width: 671px) 100vw, 671px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/e1318cfc24afa3574c819e68bee285d9/d0e73/props.png&quot;
+            alt=&quot;Image&quot;
+            title=&quot;Image&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;alignment-snapper-class&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#alignment-snapper-class&quot; aria-label=&quot;alignment snapper class permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Alignment Snapper Class&lt;/h2&gt;
+&lt;p&gt;Inkscape already uses a class named &lt;code class=&quot;language-text&quot;&gt;ObjectSnapper&lt;/code&gt; to snap point on objects to other
+objects. This class is the base on top of which I build. So I wrote a very rudimentary
+implementation of an  &lt;code class=&quot;language-text&quot;&gt;AlignmentSnapper&lt;/code&gt; class that allows aligning objects to nearby objects.
+This is still a very early stage in implementation and is far from ready. There is
+a lot that needs to be optimised for example &lt;code class=&quot;language-text&quot;&gt;ObjectSnapper&lt;/code&gt; and &lt;code class=&quot;language-text&quot;&gt;AlignmentSnapper&lt;/code&gt; can
+benifit from sharing data with each other.&lt;/p&gt;
+&lt;p&gt;Having said that, here is a list of things that work and things that don’t!&lt;/p&gt;
+&lt;h3 id=&quot;what-works&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#what-works&quot; aria-label=&quot;what works permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;What Works&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Snapping to corners, center and edge midpoints of other object’s bounding box&lt;/li&gt;
+&lt;li&gt;PreSnapping tools to draw aligned objects&lt;/li&gt;
+&lt;li&gt;Snapping to page corners and midpoint if Toggle Snapping to Page Border option is enabled&lt;/li&gt;
+&lt;li&gt;While editing paths nodes snap to the nodes in the object and bounding boxes of other objects&lt;/li&gt;
+&lt;li&gt;Set Alignment tolerance in the Document Properties dialog&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;known-bugs&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#known-bugs&quot; aria-label=&quot;known bugs permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Known Bugs&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Source object’s nodes are snapped instead of its bounding box points&lt;/li&gt;
+&lt;li&gt;While editing paths, the snapping is not as responsive&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;SnapIndicator&lt;/code&gt; has not been updated so it uses the existing implementation and
+give a warning and shows &lt;code class=&quot;language-text&quot;&gt;UNDEFINED&lt;/code&gt; snap type.&lt;/p&gt;
+&lt;p&gt;No toggles have been implemented as of now.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/e2a3a0c21e8b32c452fa4028bae83ed9/alignment-2.gif&quot; alt=&quot;Image&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;next-up&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#next-up&quot; aria-label=&quot;next up permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Next Up&lt;/h2&gt;
+&lt;p&gt;Since now I have basic &lt;em&gt;Smart Snapping&lt;/em&gt; working more or less how I would want it
+to work like, the next step would be to discuss with #team_ux how exactly we want
+this feature to behave, what should be the different settings and toggle options.
+Apart from this the next major step would be to extend the &lt;code class=&quot;language-text&quot;&gt;SnapIndicator&lt;/code&gt; class.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[OnCanvas Alignment Guides in Inkscape]]></title><description><![CDATA[This blog breifly explains by GSoC Project at Inkscape]]></description><link>https://lumen.netlify.com/posts/gsoc2021-project</link><guid isPermaLink="false">https://lumen.netlify.com/posts/gsoc2021-project</guid><pubDate>Tue, 25 May 2021 06:31:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;The following is an excrept from my actual GSoC proposal&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&quot;tldr&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#tldr&quot; aria-label=&quot;tldr permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;TLDR&lt;/h3&gt;
+&lt;p&gt;I propose to add OnCanvas Alignment Guides to Inkscape. When enabled, while moving objects around in the canvas, the selection will snap to temporary Horizontal or Vertical guide lines that will appear if the selected object can be aligned relative to another object on the canvas.&lt;/p&gt;
+&lt;h2 id=&quot;motivation&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#motivation&quot; aria-label=&quot;motivation permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;Currenty on Canvas Snapping in Inkscape is limited only to snapping points in close poximity.
+Points on objects are snapped based on their distance (&lt;em&gt;L2 Norm&lt;/em&gt;). However there is no provision
+for snapping objects that may align with each other. Currently the Align &amp;#x26; Distribute dialog is the
+only way to align objects.
+Alignment Snapping or &lt;strong&gt;Smart Snaping&lt;/strong&gt; as some call it is an integral feature of modern
+graphics software.&lt;/p&gt;
+&lt;h2 id=&quot;so-what-are-alignment-guides&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#so-what-are-alignment-guides&quot; aria-label=&quot;so what are alignment guides permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;So what are Alignment Guides?&lt;/h2&gt;
+&lt;p&gt;Alignment guides are Horizontal or Vertical lines that only appear when you’re
+editing objects on the canvas. They provide more contextual information about and
+objects X/Y position relative to other nearby objects. As you get closer to align
+the selection with the edge of another nearby object, the selection will automatically
+snap to that position and an Alignment Guide that coincides with the (now aligned)
+edges will appear to indicate that a snap has indeed occurred. This guide can be
+in vertical or horizontal direction depending on the optimum snap found&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 724px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/84eeed7c74a006f0b048c12bd59fd65e/a242d/b1-1.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 62.5%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAIAAAAmMtkJAAAACXBIWXMAAAsTAAALEwEAmpwYAAABfElEQVQoz5WRv2rCUBjFry7qE+ioWcQncKguSlUcpZtQfKAO7dClYJdOSguVgggOOorg5KSCoCKJf3JTlQTbJPf0xlobbRx6OLmQy/fjfDkh+JGqqovFQpbl5XI5m06lyYTO53NRlCRJFEXDMPBHhD+MMX72+/1SqVSv1xvN5kut9lSpNDqd52q1XC4Xi0VFUQ6TR/CpTBPdLtpttFro9bCD4CRygvEppihMEBghllMp60bXnWFm1w7GaoVwGC4CQpDNWlPn4KO37/XeFVMIGYRYTqd4UYa+NWDYvYd5vYPBYDweD4fD0WgkzWbb9frj4RF397i5xevbvgXHZE3TKKW8TP6HZCrTBaWf9IpdR5GMIxvDZQwXMcS+HUc8imgOOQ3a6doM1toKlJARIjpx625rdfzatWsigMAa69PCTGZyfIVVBBE+5IPPA4/dXng5L0DYYHM2OYggh91w22MPyX74eYAzrEItoJBAIoNMGmm7+U0SyTzyDt/8X30BFoh/BhtoSj4AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/84eeed7c74a006f0b048c12bd59fd65e/8ac56/b1-1.webp 240w,
+/static/84eeed7c74a006f0b048c12bd59fd65e/d3be9/b1-1.webp 480w,
+/static/84eeed7c74a006f0b048c12bd59fd65e/79561/b1-1.webp 724w&quot;
+              sizes=&quot;(max-width: 724px) 100vw, 724px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/84eeed7c74a006f0b048c12bd59fd65e/8ff5a/b1-1.png 240w,
+/static/84eeed7c74a006f0b048c12bd59fd65e/e85cb/b1-1.png 480w,
+/static/84eeed7c74a006f0b048c12bd59fd65e/a242d/b1-1.png 724w&quot;
+            sizes=&quot;(max-width: 724px) 100vw, 724px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/84eeed7c74a006f0b048c12bd59fd65e/a242d/b1-1.png&quot;
+            alt=&quot;Image&quot;
+            title=&quot;Image&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;searching-for-snap-candidates&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#searching-for-snap-candidates&quot; aria-label=&quot;searching for snap candidates permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Searching for Snap Candidates&lt;/h2&gt;
+&lt;p&gt;The easiest way to find candidate alignment positions is by looking at the corner
+and edge midpoints of bounding boxes of the surrounding objects.
+Once the candidate points are found we can find the best snap position in the following way:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extend two lines from the source point in X and Y direction.&lt;/li&gt;
+&lt;li&gt;Find the perpendicular distance of all candidate points to these lines&lt;/li&gt;
+&lt;li&gt;Let’s say point Q has the least distance from one of the lines, then the position
+to snap to is a point R which is the projection of Q on the line perpendicular to the one from which the distance is measured. (This process can be simplified by just moving the point P the same amount perpendicular to the line from which the distance is measured).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/c7b626445e86bd4d36091b2a07161dac/9b7bb/snap.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 70.83333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOCAYAAAAvxDzwAAAACXBIWXMABXDUAAVw1AFBOQ6rAAABZ0lEQVQ4y6WTS07DMBCGs+YhsQBuBWdg0eshIdggbsMCIaVVQxrbiWN7fn6nSWq3ICh4YtlyPN88XSAZIjKsXjyCBB7k/6aZ3t0fRQaMBH6OMg3v/YHyd7AtcPo5WY9AcVBaoW07NE3DtYVzPera0oBsTSeepvxiOBgvSGCYnC70MK3GatXAh93tCHfO5WnYk2KMNRu1pUcMdVPX0FpDK43gwwzUymBZ1ph1Uw9jAVgChtLDvzxDHh/w8XSPdbWEIbjrO5jOoOU+rtbZYV+uDItHvSgDYysEOi4CbxT89SVCUaC9usD67RWKipbAnsbWdcVUOJreyQxKgXNGTQucntHnAuH8BN2ypIfMpVJQDLHZ2DxEAb5K11gUnlsLWSyAm1u4xR2q95KeHbZFVsR0nxdFMmM954aF8C4c1dSHfejZEo6Z8PZXTfzzSxmVY2NPT0+SJj4eOAbth7pLdvYvYHzLsS3+AvwEE5dD9fFLgMAAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/c7b626445e86bd4d36091b2a07161dac/8ac56/snap.webp 240w,
+/static/c7b626445e86bd4d36091b2a07161dac/d3be9/snap.webp 480w,
+/static/c7b626445e86bd4d36091b2a07161dac/e46b2/snap.webp 960w,
+/static/c7b626445e86bd4d36091b2a07161dac/f992d/snap.webp 1440w,
+/static/c7b626445e86bd4d36091b2a07161dac/882b9/snap.webp 1920w,
+/static/c7b626445e86bd4d36091b2a07161dac/ebc62/snap.webp 4298w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/c7b626445e86bd4d36091b2a07161dac/8ff5a/snap.png 240w,
+/static/c7b626445e86bd4d36091b2a07161dac/e85cb/snap.png 480w,
+/static/c7b626445e86bd4d36091b2a07161dac/d9199/snap.png 960w,
+/static/c7b626445e86bd4d36091b2a07161dac/07a9c/snap.png 1440w,
+/static/c7b626445e86bd4d36091b2a07161dac/29114/snap.png 1920w,
+/static/c7b626445e86bd4d36091b2a07161dac/9b7bb/snap.png 4298w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/c7b626445e86bd4d36091b2a07161dac/d9199/snap.png&quot;
+            alt=&quot;Image&quot;
+            title=&quot;Image&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;settings-and-toggles&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#settings-and-toggles&quot; aria-label=&quot;settings and toggles permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Settings and Toggles&lt;/h2&gt;
+&lt;p&gt;After some discussion with #team_ux, I feel the following scheme would be the
+best in terms of giving extra control but at the same time not making this feature
+too complicated.&lt;/p&gt;
+&lt;h3 id=&quot;toggle-buttons&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#toggle-buttons&quot; aria-label=&quot;toggle buttons permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Toggle Buttons:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Alignment Snapping (enable/disable alignment guides to snap to bounding boxes of the objects, no snapping when editing nodes) (enabled by default)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Snap only to itself (enable/disable alignment guides while editing nodes to other nodes in the path that is being edited) (disabled by default)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;what-more&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#what-more&quot; aria-label=&quot;what more permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;What More?&lt;/h2&gt;
+&lt;p&gt;This is just an early assesment in terms of what we can do with Alignment Guides
+One of the future possible goals of this project is use Alignment Guides to distribute objects
+&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/563e0c44f2a4430051c3503de38f047b/387d5/distribute.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 27.500000000000004%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMABXDUAAVw1AFBOQ6rAAAAvElEQVQY042RMQrCQBBFH4ooWhisxAhiY6k38SbWHsTKw3gH72BnRASTmBiT+JdkIUqCFo/9zO7M/uGTQ27IICtP/wb9EEbSgb0Taam9E3RimEpH1V4DVuRFkznvoiuGwi9rpiEt9Vm0xFg8KvefA+0viR6tYbaFRVJxYB2qdl2Cu4OVdNLo0BZTrbkH5yAH0uH3QNUuGxgcYS4d/7tyTzgNK3uiLSYi+rmyCeWpUF5FKH5dKIFCkTu3LpQ3elbTUDTRPxIAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/563e0c44f2a4430051c3503de38f047b/8ac56/distribute.webp 240w,
+/static/563e0c44f2a4430051c3503de38f047b/d3be9/distribute.webp 480w,
+/static/563e0c44f2a4430051c3503de38f047b/e46b2/distribute.webp 960w,
+/static/563e0c44f2a4430051c3503de38f047b/f992d/distribute.webp 1440w,
+/static/563e0c44f2a4430051c3503de38f047b/882b9/distribute.webp 1920w,
+/static/563e0c44f2a4430051c3503de38f047b/33e9e/distribute.webp 9386w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/563e0c44f2a4430051c3503de38f047b/8ff5a/distribute.png 240w,
+/static/563e0c44f2a4430051c3503de38f047b/e85cb/distribute.png 480w,
+/static/563e0c44f2a4430051c3503de38f047b/d9199/distribute.png 960w,
+/static/563e0c44f2a4430051c3503de38f047b/07a9c/distribute.png 1440w,
+/static/563e0c44f2a4430051c3503de38f047b/29114/distribute.png 1920w,
+/static/563e0c44f2a4430051c3503de38f047b/387d5/distribute.png 9386w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/563e0c44f2a4430051c3503de38f047b/d9199/distribute.png&quot;
+            alt=&quot;Image&quot;
+            title=&quot;Image&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;</content:encoded></item></channel></rss>
